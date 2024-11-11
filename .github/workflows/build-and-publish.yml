@@ -1,4 +1,4 @@
-name: Build and Publish Clickup SDK
+name: Build and Publish ClickUp API Library
 
 on:
   push:

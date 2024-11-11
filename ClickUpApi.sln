@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35424.110
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickUpApi.Tests", "..\ClickupSdk.Tests\ClickUpApi.Tests.csproj", "{AFC25069-7E2B-4688-8BFF-39B18F4575A0}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickUpApi", "src\ClickUpApi.csproj", "{F6013E5B-D422-4FD9-9275-0422BB6D9A20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickUpApi.Tests", "tests\ClickUpApi.Tests.csproj", "{912F6893-B13E-42ED-95E9-A27BAD71F5D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AFC25069-7E2B-4688-8BFF-39B18F4575A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AFC25069-7E2B-4688-8BFF-39B18F4575A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AFC25069-7E2B-4688-8BFF-39B18F4575A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AFC25069-7E2B-4688-8BFF-39B18F4575A0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F6013E5B-D422-4FD9-9275-0422BB6D9A20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F6013E5B-D422-4FD9-9275-0422BB6D9A20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6013E5B-D422-4FD9-9275-0422BB6D9A20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6013E5B-D422-4FD9-9275-0422BB6D9A20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{912F6893-B13E-42ED-95E9-A27BAD71F5D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{912F6893-B13E-42ED-95E9-A27BAD71F5D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{912F6893-B13E-42ED-95E9-A27BAD71F5D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{912F6893-B13E-42ED-95E9-A27BAD71F5D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
