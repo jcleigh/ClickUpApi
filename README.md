@@ -1,5 +1,7 @@
 # ClickUp API for .NET
 
+### ** Note: This is still a work in progress! **
+
 This library allows you to interact with the Clickup API using .NET 8. It provides methods for authentication, creating tasks, and other API interactions.
 
 ## Installation
