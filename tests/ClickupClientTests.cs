@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Moq;
 using Moq.Protected;
 using Xunit;
+using ClickUpApi.Models;
 
 namespace ClickUpApi.Tests
 {
@@ -28,7 +29,12 @@ namespace ClickUpApi.Tests
             var listId = "test_list_id";
             var taskName = "test_task_name";
             var taskDescription = "test_task_description";
-            var expectedTaskId = "test_task_id";
+            var expectedTask = new Task
+            {
+                Id = "test_task_id",
+                Name = taskName,
+                Description = taskDescription
+            };
 
             _httpMessageHandlerMock.Protected()
                 .Setup<Task<HttpResponseMessage>>(
@@ -39,14 +45,16 @@ namespace ClickUpApi.Tests
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent($"{{\"id\": \"{expectedTaskId}\"}}")
+                    Content = new StringContent($"{{\"id\": \"{expectedTask.Id}\", \"name\": \"{expectedTask.Name}\", \"description\": \"{expectedTask.Description}\"}}")
                 });
 
             // Act
-            var taskId = await _clickUpClient.CreateTaskAsync(listId, taskName, taskDescription);
+            var task = await _clickUpClient.CreateTaskAsync(listId, taskName, taskDescription);
 
             // Assert
-            Assert.Equal(expectedTaskId, taskId);
+            Assert.Equal(expectedTask.Id, task.Id);
+            Assert.Equal(expectedTask.Name, task.Name);
+            Assert.Equal(expectedTask.Description, task.Description);
         }
 
         [Fact]
@@ -54,7 +62,11 @@ namespace ClickUpApi.Tests
         {
             // Arrange
             var taskId = "test_task_id";
-            var expectedTaskName = "test_task_name";
+            var expectedTask = new Task
+            {
+                Id = taskId,
+                Name = "test_task_name"
+            };
 
             _httpMessageHandlerMock.Protected()
                 .Setup<Task<HttpResponseMessage>>(
@@ -65,14 +77,15 @@ namespace ClickUpApi.Tests
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent($"{{\"name\": \"{expectedTaskName}\"}}")
+                    Content = new StringContent($"{{\"id\": \"{expectedTask.Id}\", \"name\": \"{expectedTask.Name}\"}}")
                 });
 
             // Act
-            var taskName = await _clickUpClient.GetTaskAsync(taskId);
+            var task = await _clickUpClient.GetTaskAsync(taskId);
 
             // Assert
-            Assert.Equal(expectedTaskName, taskName);
+            Assert.Equal(expectedTask.Id, task.Id);
+            Assert.Equal(expectedTask.Name, task.Name);
         }
 
         [Fact]
@@ -82,7 +95,12 @@ namespace ClickUpApi.Tests
             var taskId = "test_task_id";
             var taskName = "updated_task_name";
             var taskDescription = "updated_task_description";
-            var expectedTaskId = "test_task_id";
+            var expectedTask = new Task
+            {
+                Id = taskId,
+                Name = taskName,
+                Description = taskDescription
+            };
 
             _httpMessageHandlerMock.Protected()
                 .Setup<Task<HttpResponseMessage>>(
@@ -93,14 +111,16 @@ namespace ClickUpApi.Tests
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent($"{{\"id\": \"{expectedTaskId}\"}}")
+                    Content = new StringContent($"{{\"id\": \"{expectedTask.Id}\", \"name\": \"{expectedTask.Name}\", \"description\": \"{expectedTask.Description}\"}}")
                 });
 
             // Act
-            var updatedTaskId = await _clickUpClient.UpdateTaskAsync(taskId, taskName, taskDescription);
+            var updatedTask = await _clickUpClient.UpdateTaskAsync(taskId, taskName, taskDescription);
 
             // Assert
-            Assert.Equal(expectedTaskId, updatedTaskId);
+            Assert.Equal(expectedTask.Id, updatedTask.Id);
+            Assert.Equal(expectedTask.Name, updatedTask.Name);
+            Assert.Equal(expectedTask.Description, updatedTask.Description);
         }
 
         [Fact]
@@ -136,7 +156,11 @@ namespace ClickUpApi.Tests
         public async Task GetAuthorizedUserAsync_ReturnsUsername()
         {
             // Arrange
-            var expectedUsername = "test_username";
+            var expectedUser = new User
+            {
+                Id = "test_user_id",
+                Username = "test_username"
+            };
 
             _httpMessageHandlerMock.Protected()
                 .Setup<Task<HttpResponseMessage>>(
@@ -147,21 +171,26 @@ namespace ClickUpApi.Tests
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent($"{{\"username\": \"{expectedUsername}\"}}")
+                    Content = new StringContent($"{{\"id\": \"{expectedUser.Id}\", \"username\": \"{expectedUser.Username}\"}}")
                 });
 
             // Act
-            var username = await _clickUpClient.GetAuthorizedUserAsync();
+            var user = await _clickUpClient.GetAuthorizedUserAsync();
 
             // Assert
-            Assert.Equal(expectedUsername, username);
+            Assert.Equal(expectedUser.Id, user.Id);
+            Assert.Equal(expectedUser.Username, user.Username);
         }
 
         [Fact]
         public async Task GetAuthorizedTeamsAsync_ReturnsTeams()
         {
             // Arrange
-            var expectedTeams = "[{\"id\": \"team1\"}, {\"id\": \"team2\"}]";
+            var expectedTeams = new[]
+            {
+                new Team { Id = "team1" },
+                new Team { Id = "team2" }
+            };
 
             _httpMessageHandlerMock.Protected()
                 .Setup<Task<HttpResponseMessage>>(
@@ -172,14 +201,18 @@ namespace ClickUpApi.Tests
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent($"{{\"teams\": {expectedTeams}}}")
+                    Content = new StringContent($"{{\"teams\": [{string.Join(", ", expectedTeams.Select(t => $"{{\"id\": \"{t.Id}\"}}"))}]}}")
                 });
 
             // Act
             var teams = await _clickUpClient.GetAuthorizedTeamsAsync();
 
             // Assert
-            Assert.Equal(expectedTeams, teams);
+            Assert.Equal(expectedTeams.Length, teams.Length);
+            for (int i = 0; i < expectedTeams.Length; i++)
+            {
+                Assert.Equal(expectedTeams[i].Id, teams[i].Id);
+            }
         }
     }
 }

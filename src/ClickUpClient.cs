@@ -2,6 +2,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using ClickUpApi.Models;
 
 namespace ClickUpApi
 {
@@ -16,7 +17,7 @@ namespace ClickUpApi
             _personalApiToken = personalApiToken;
         }
 
-        public async Task<string> CreateTaskAsync(string listId, string taskName, string taskDescription)
+        public async Task<Models.Task> CreateTaskAsync(string listId, string taskName, string taskDescription)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, $"https://api.clickup.com/api/v2/list/{listId}/task")
             {
@@ -32,11 +33,10 @@ namespace ClickUpApi
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
-            var jsonDocument = JsonDocument.Parse(content);
-            return jsonDocument.RootElement.GetProperty("id").GetString();
+            return JsonSerializer.Deserialize<Models.Task>(content);
         }
 
-        public async Task<string> GetTaskAsync(string taskId)
+        public async Task<Models.Task> GetTaskAsync(string taskId)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"https://api.clickup.com/api/v2/task/{taskId}");
             request.Headers.Add("Authorization", _personalApiToken);
@@ -45,11 +45,10 @@ namespace ClickUpApi
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
-            var jsonDocument = JsonDocument.Parse(content);
-            return jsonDocument.RootElement.GetProperty("name").GetString();
+            return JsonSerializer.Deserialize<Models.Task>(content);
         }
 
-        public async Task<string> UpdateTaskAsync(string taskId, string taskName, string taskDescription)
+        public async Task<Models.Task> UpdateTaskAsync(string taskId, string taskName, string taskDescription)
         {
             var request = new HttpRequestMessage(HttpMethod.Put, $"https://api.clickup.com/api/v2/task/{taskId}")
             {
@@ -65,8 +64,7 @@ namespace ClickUpApi
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
-            var jsonDocument = JsonDocument.Parse(content);
-            return jsonDocument.RootElement.GetProperty("id").GetString();
+            return JsonSerializer.Deserialize<Models.Task>(content);
         }
 
         public async Task DeleteTaskAsync(string taskId)
@@ -78,7 +76,7 @@ namespace ClickUpApi
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task<string> GetAuthorizedUserAsync()
+        public async Task<Models.User> GetAuthorizedUserAsync()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "https://api.clickup.com/api/v2/user");
             request.Headers.Add("Authorization", _personalApiToken);
@@ -87,11 +85,10 @@ namespace ClickUpApi
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
-            var jsonDocument = JsonDocument.Parse(content);
-            return jsonDocument.RootElement.GetProperty("username").GetString();
+            return JsonSerializer.Deserialize<Models.User>(content);
         }
 
-        public async Task<string> GetAuthorizedTeamsAsync()
+        public async Task<Models.Team[]> GetAuthorizedTeamsAsync()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "https://api.clickup.com/api/v2/team");
             request.Headers.Add("Authorization", _personalApiToken);
@@ -101,7 +98,7 @@ namespace ClickUpApi
 
             var content = await response.Content.ReadAsStringAsync();
             var jsonDocument = JsonDocument.Parse(content);
-            return jsonDocument.RootElement.GetProperty("teams").ToString();
+            return JsonSerializer.Deserialize<Models.Team[]>(jsonDocument.RootElement.GetProperty("teams").ToString());
         }
     }
 }
