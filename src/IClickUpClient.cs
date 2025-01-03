@@ -4,11 +4,11 @@ namespace ClickUpApi
 {
     public interface IClickUpClient
     {
-        Task<string> CreateTaskAsync(string listId, string taskName, string taskDescription);
-        Task<string> GetTaskAsync(string taskId);
-        Task<string> UpdateTaskAsync(string taskId, string taskName, string taskDescription);
+        Task<Models.Task> CreateTaskAsync(string listId, string taskName, string taskDescription);
+        Task<Models.Task> GetTaskAsync(string taskId);
+        Task<Models.Task> UpdateTaskAsync(string taskId, string taskName, string taskDescription);
         Task DeleteTaskAsync(string taskId);
-        Task<string> GetAuthorizedUserAsync();
-        Task<string> GetAuthorizedTeamsAsync();
+        Task<Models.User> GetAuthorizedUserAsync();
+        Task<Models.Team[]> GetAuthorizedTeamsAsync();
     }
 }
