@@ -5,15 +5,8 @@ using System.Threading.Tasks;
 
 namespace ClickUpApi
 {
-    public class ClickUpClient : IClickUpClient
+    public class ClickUpClient(HttpClient httpClient) : IClickUpClient
     {
-        private readonly HttpClient _httpClient;
-
-        public ClickUpClient(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
-
         public async Task<string> AuthenticateAsync(string clientId, string clientSecret, string code)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, "https://api.clickup.com/api/v2/oauth/token")
@@ -26,7 +19,7 @@ namespace ClickUpApi
                 }), Encoding.UTF8, "application/json")
             };
 
-            var response = await _httpClient.SendAsync(request);
+            var response = await httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
@@ -45,7 +38,7 @@ namespace ClickUpApi
                 }), Encoding.UTF8, "application/json")
             };
 
-            var response = await _httpClient.SendAsync(request);
+            var response = await httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
@@ -57,7 +50,7 @@ namespace ClickUpApi
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"https://api.clickup.com/api/v2/task/{taskId}");
 
-            var response = await _httpClient.SendAsync(request);
+            var response = await httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
@@ -76,7 +69,7 @@ namespace ClickUpApi
                 }), Encoding.UTF8, "application/json")
             };
 
-            var response = await _httpClient.SendAsync(request);
+            var response = await httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
@@ -88,7 +81,7 @@ namespace ClickUpApi
         {
             var request = new HttpRequestMessage(HttpMethod.Delete, $"https://api.clickup.com/api/v2/task/{taskId}");
 
-            var response = await _httpClient.SendAsync(request);
+            var response = await httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
         }
 
@@ -96,7 +89,7 @@ namespace ClickUpApi
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "https://api.clickup.com/api/v2/user");
 
-            var response = await _httpClient.SendAsync(request);
+            var response = await httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
@@ -108,7 +101,7 @@ namespace ClickUpApi
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "https://api.clickup.com/api/v2/team");
 
-            var response = await _httpClient.SendAsync(request);
+            var response = await httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();

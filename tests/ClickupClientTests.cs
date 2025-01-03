@@ -8,17 +8,16 @@ using Xunit;
 
 namespace ClickUpApi.Tests
 {
-    public class ClickupClientTests
+    public class ClickUpClientTests
     {
         private readonly Mock<HttpMessageHandler> _httpMessageHandlerMock;
-        private readonly HttpClient _httpClient;
         private readonly ClickUpClient _clickUpClient;
 
-        public ClickupClientTests()
+        public ClickUpClientTests()
         {
             _httpMessageHandlerMock = new Mock<HttpMessageHandler>();
-            _httpClient = new HttpClient(_httpMessageHandlerMock.Object);
-            _clickUpClient = new ClickUpClient(_httpClient);
+            var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
+            _clickUpClient = new ClickUpClient(httpClient);
         }
 
         [Fact]
