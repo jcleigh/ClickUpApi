@@ -12,40 +12,13 @@ namespace ClickUpApi.Tests
     {
         private readonly Mock<HttpMessageHandler> _httpMessageHandlerMock;
         private readonly ClickUpClient _clickUpClient;
+        private readonly string _personalApiToken = "test_personal_api_token";
 
         public ClickUpClientTests()
         {
             _httpMessageHandlerMock = new Mock<HttpMessageHandler>();
             var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
-            _clickUpClient = new ClickUpClient(httpClient);
-        }
-
-        [Fact]
-        public async Task AuthenticateAsync_ReturnsAccessToken()
-        {
-            // Arrange
-            var clientId = "test_client_id";
-            var clientSecret = "test_client_secret";
-            var code = "test_code";
-            var expectedAccessToken = "test_access_token";
-
-            _httpMessageHandlerMock.Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>()
-                )
-                .ReturnsAsync(new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent($"{{\"access_token\": \"{expectedAccessToken}\"}}")
-                });
-
-            // Act
-            var accessToken = await _clickUpClient.AuthenticateAsync(clientId, clientSecret, code);
-
-            // Assert
-            Assert.Equal(expectedAccessToken, accessToken);
+            _clickUpClient = new ClickUpClient(httpClient, _personalApiToken);
         }
 
         [Fact]
