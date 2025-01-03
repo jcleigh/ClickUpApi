@@ -5,16 +5,17 @@ using Microsoft.Extensions.DependencyInjection;
 var services = new ServiceCollection();
 
 // Add the ClickUpClient to the service collection
-services.AddClickUpClient();
+services.AddHttpClient<IClickUpClient, ClickUpClient>(client =>
+{
+    var personalApiToken = "YOUR_PERSONAL_API_TOKEN";
+    client.DefaultRequestHeaders.Add("Authorization", personalApiToken);
+});
 
 // Build the ServiceProvider
 var serviceProvider = services.BuildServiceProvider();
 
 // Resolve the IClickUpClient service
 var clickUpClient = serviceProvider.GetRequiredService<IClickUpClient>();
-
-// Authenticate with the ClickUp API
-await clickUpClient.AuthenticateAsync("YOUR_CLIENT_ID", "YOUR_CLIENT_SECRET", "test_code");
 
 // Fetch data using the ClickUp API
 var task = await clickUpClient.GetTaskAsync("test_task_id");

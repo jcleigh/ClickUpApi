@@ -42,11 +42,6 @@ public class MyService
         _clickUpClient = clickUpClient;
     }
 
-    public async Task<string> AuthenticateAsync(string clientId, string clientSecret, string code)
-    {
-        return await _clickUpClient.AuthenticateAsync(clientId, clientSecret, code);
-    }
-
     public async Task<string> CreateTaskAsync(string listId, string taskName, string taskDescription)
     {
         return await _clickUpClient.CreateTaskAsync(listId, taskName, taskDescription);
@@ -61,7 +56,7 @@ public class MyService
 ### Authentication
 
 ```csharp
-var accessToken = await _clickUpClient.AuthenticateAsync("your_client_id", "your_client_secret", "your_code");
+var clickUpClient = new ClickUpClient(new HttpClient(), "YOUR_PERSONAL_API_TOKEN");
 ```
 
 ### Creating a Task

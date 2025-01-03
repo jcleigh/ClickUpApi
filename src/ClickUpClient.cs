@@ -5,26 +5,15 @@ using System.Threading.Tasks;
 
 namespace ClickUpApi
 {
-    public class ClickUpClient(HttpClient httpClient) : IClickUpClient
+    public class ClickUpClient(HttpClient httpClient, string personalApiToken) : IClickUpClient
     {
-        public async Task<string> AuthenticateAsync(string clientId, string clientSecret, string code)
+        private readonly HttpClient _httpClient;
+        private readonly string _personalApiToken;
+
+        public ClickUpClient(HttpClient httpClient, string personalApiToken)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://api.clickup.com/api/v2/oauth/token")
-            {
-                Content = new StringContent(JsonSerializer.Serialize(new
-                {
-                    client_id = clientId,
-                    client_secret = clientSecret,
-                    code
-                }), Encoding.UTF8, "application/json")
-            };
-
-            var response = await httpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-
-            var content = await response.Content.ReadAsStringAsync();
-            var jsonDocument = JsonDocument.Parse(content);
-            return jsonDocument.RootElement.GetProperty("access_token").GetString();
+            _httpClient = httpClient;
+            _personalApiToken = personalApiToken;
         }
 
         public async Task<string> CreateTaskAsync(string listId, string taskName, string taskDescription)
@@ -37,8 +26,9 @@ namespace ClickUpApi
                     description = taskDescription
                 }), Encoding.UTF8, "application/json")
             };
+            request.Headers.Add("Authorization", _personalApiToken);
 
-            var response = await httpClient.SendAsync(request);
+            var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
@@ -49,8 +39,9 @@ namespace ClickUpApi
         public async Task<string> GetTaskAsync(string taskId)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"https://api.clickup.com/api/v2/task/{taskId}");
+            request.Headers.Add("Authorization", _personalApiToken);
 
-            var response = await httpClient.SendAsync(request);
+            var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
@@ -68,8 +59,9 @@ namespace ClickUpApi
                     description = taskDescription
                 }), Encoding.UTF8, "application/json")
             };
+            request.Headers.Add("Authorization", _personalApiToken);
 
-            var response = await httpClient.SendAsync(request);
+            var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
@@ -80,16 +72,18 @@ namespace ClickUpApi
         public async Task DeleteTaskAsync(string taskId)
         {
             var request = new HttpRequestMessage(HttpMethod.Delete, $"https://api.clickup.com/api/v2/task/{taskId}");
+            request.Headers.Add("Authorization", _personalApiToken);
 
-            var response = await httpClient.SendAsync(request);
+            var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
         }
 
         public async Task<string> GetAuthorizedUserAsync()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "https://api.clickup.com/api/v2/user");
+            request.Headers.Add("Authorization", _personalApiToken);
 
-            var response = await httpClient.SendAsync(request);
+            var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
@@ -100,8 +94,9 @@ namespace ClickUpApi
         public async Task<string> GetAuthorizedTeamsAsync()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "https://api.clickup.com/api/v2/team");
+            request.Headers.Add("Authorization", _personalApiToken);
 
-            var response = await httpClient.SendAsync(request);
+            var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
