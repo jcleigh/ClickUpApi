@@ -13,6 +13,7 @@ obj/
 # test coverage output
 CoverageReport/
 coverage*.xml
+TestResults/
 
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt

@@ -1,11 +1,12 @@
+using ClickUpApi.Models;
+using Moq;
+using Moq.Protected;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Moq;
-using Moq.Protected;
 using Xunit;
-using ClickUpApi.Models;
 
 namespace ClickUpApi.Tests
 {
@@ -23,13 +24,13 @@ namespace ClickUpApi.Tests
         }
 
         [Fact]
-        public async Task CreateTaskAsync_ReturnsTaskId()
+        public async System.Threading.Tasks.Task CreateTaskAsync_ReturnsTaskId()
         {
             // Arrange
             var listId = "test_list_id";
             var taskName = "test_task_name";
             var taskDescription = "test_task_description";
-            var expectedTask = new Task
+            var expectedTask = new ClickUpApi.Models.Task
             {
                 Id = "test_task_id",
                 Name = taskName,
@@ -58,11 +59,11 @@ namespace ClickUpApi.Tests
         }
 
         [Fact]
-        public async Task GetTaskAsync_ReturnsTaskName()
+        public async System.Threading.Tasks.Task GetTaskAsync_ReturnsTaskName()
         {
             // Arrange
             var taskId = "test_task_id";
-            var expectedTask = new Task
+            var expectedTask = new ClickUpApi.Models.Task
             {
                 Id = taskId,
                 Name = "test_task_name"
@@ -89,13 +90,13 @@ namespace ClickUpApi.Tests
         }
 
         [Fact]
-        public async Task UpdateTaskAsync_ReturnsUpdatedTaskId()
+        public async System.Threading.Tasks.Task UpdateTaskAsync_ReturnsUpdatedTaskId()
         {
             // Arrange
             var taskId = "test_task_id";
             var taskName = "updated_task_name";
             var taskDescription = "updated_task_description";
-            var expectedTask = new Task
+            var expectedTask = new ClickUpApi.Models.Task
             {
                 Id = taskId,
                 Name = taskName,
@@ -124,7 +125,7 @@ namespace ClickUpApi.Tests
         }
 
         [Fact]
-        public async Task DeleteTaskAsync_DeletesTask()
+        public async System.Threading.Tasks.Task DeleteTaskAsync_DeletesTask()
         {
             // Arrange
             var taskId = "test_task_id";
@@ -153,7 +154,7 @@ namespace ClickUpApi.Tests
         }
 
         [Fact]
-        public async Task GetAuthorizedUserAsync_ReturnsUsername()
+        public async System.Threading.Tasks.Task GetAuthorizedUserAsync_ReturnsUsername()
         {
             // Arrange
             var expectedUser = new User
@@ -183,7 +184,7 @@ namespace ClickUpApi.Tests
         }
 
         [Fact]
-        public async Task GetAuthorizedTeamsAsync_ReturnsTeams()
+        public async System.Threading.Tasks.Task GetAuthorizedTeamsAsync_ReturnsTeams()
         {
             // Arrange
             var expectedTeams = new[]

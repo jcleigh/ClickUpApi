@@ -3,20 +3,21 @@ using Xunit;
 
 namespace ClickUpApi.Tests
 {
-    public class DependencyInjectionTest
+    public class DependencyInjectionTests
     {
         [Fact]
-        public void AddClickUpClient_RegistersIClickUpClientWithHttpClient()
+        public void AddClickUpClient_RegistersIClickUpClient()
         {
             // Arrange
             var services = new ServiceCollection();
+            var personalApiToken = "test-token";
 
             // Act
-            services.AddClickUpClient();
-
-            // Assert
+            services.AddClickUpClient(personalApiToken);
             var serviceProvider = services.BuildServiceProvider();
             var client = serviceProvider.GetService<IClickUpClient>();
+
+            // Assert
             Assert.NotNull(client);
             Assert.IsType<ClickUpClient>(client);
         }

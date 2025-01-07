@@ -1,21 +1,17 @@
+using ClickUpApi.Models;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using ClickUpApi.Models;
 
 namespace ClickUpApi
 {
     public class ClickUpClient(HttpClient httpClient, string personalApiToken) : IClickUpClient
     {
-        private readonly HttpClient _httpClient;
-        private readonly string _personalApiToken;
-
-        public ClickUpClient(HttpClient httpClient, string personalApiToken)
+        private readonly JsonSerializerOptions _jsonOptions = new()
         {
-            _httpClient = httpClient;
-            _personalApiToken = personalApiToken;
-        }
+            PropertyNameCaseInsensitive = true
+        };
 
         public async Task<Models.Task> CreateTaskAsync(string listId, string taskName, string taskDescription)
         {
@@ -27,25 +23,28 @@ namespace ClickUpApi
                     description = taskDescription
                 }), Encoding.UTF8, "application/json")
             };
-            request.Headers.Add("Authorization", _personalApiToken);
+            request.Headers.Add("Authorization", personalApiToken);
+            request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-            var response = await _httpClient.SendAsync(request);
+            var response = await httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<Models.Task>(content);
+            return JsonSerializer.Deserialize<Models.Task>(content, _jsonOptions);
         }
 
         public async Task<Models.Task> GetTaskAsync(string taskId)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"https://api.clickup.com/api/v2/task/{taskId}");
-            request.Headers.Add("Authorization", _personalApiToken);
+            request.Headers.Add("Authorization", personalApiToken);
+            request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-            var response = await _httpClient.SendAsync(request);
+            var response = await httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<Models.Task>(content);
+            var x = JsonSerializer.Deserialize<Models.Task>(content, _jsonOptions);
+            return x;
         }
 
         public async Task<Models.Task> UpdateTaskAsync(string taskId, string taskName, string taskDescription)
@@ -58,47 +57,52 @@ namespace ClickUpApi
                     description = taskDescription
                 }), Encoding.UTF8, "application/json")
             };
-            request.Headers.Add("Authorization", _personalApiToken);
+            request.Headers.Add("Authorization", personalApiToken);
+            request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-            var response = await _httpClient.SendAsync(request);
+            var response = await httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<Models.Task>(content);
+            return JsonSerializer.Deserialize<Models.Task>(content, _jsonOptions);
         }
 
-        public async Task DeleteTaskAsync(string taskId)
+        public async System.Threading.Tasks.Task DeleteTaskAsync(string taskId)
         {
             var request = new HttpRequestMessage(HttpMethod.Delete, $"https://api.clickup.com/api/v2/task/{taskId}");
-            request.Headers.Add("Authorization", _personalApiToken);
+            request.Headers.Add("Authorization", personalApiToken);
+            request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-            var response = await _httpClient.SendAsync(request);
+            var response = await httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task<Models.User> GetAuthorizedUserAsync()
+        public async Task<User> GetAuthorizedUserAsync()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "https://api.clickup.com/api/v2/user");
-            request.Headers.Add("Authorization", _personalApiToken);
+            request.Headers.Add("Authorization", personalApiToken);
+            request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-            var response = await _httpClient.SendAsync(request);
+            var response = await httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<Models.User>(content);
+            return JsonSerializer.Deserialize<User>(content, _jsonOptions);
         }
 
-        public async Task<Models.Team[]> GetAuthorizedTeamsAsync()
+        public async Task<Team[]> GetAuthorizedTeamsAsync()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "https://api.clickup.com/api/v2/team");
-            request.Headers.Add("Authorization", _personalApiToken);
+            request.Headers.Add("Authorization", personalApiToken);
+            request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-            var response = await _httpClient.SendAsync(request);
+            var response = await httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
             var jsonDocument = JsonDocument.Parse(content);
-            return JsonSerializer.Deserialize<Models.Team[]>(jsonDocument.RootElement.GetProperty("teams").ToString());
+            return JsonSerializer.Deserialize<Team[]>(jsonDocument.RootElement.GetProperty("teams").ToString(), _jsonOptions);
         }
     }
 }
+
